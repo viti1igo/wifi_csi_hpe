@@ -1,0 +1,17 @@
+condition: ssl_domain_adapted
+pretraining:
+  enabled: true
+  mask_ratio: 0.30
+  epochs: 50
+  learning_rate: 0.001
+  sources: [wipose_train_unlabeled, wimans_classroom, wimans_meeting_room]
+  excluded_target_environment: empty_room
+transfer:
+  source: wipose
+  target: wimans
+  target_data_seen_before_inference: true
+  target_pose_labels_seen: false
+paths:
+  log_dir: conditions/ssl_domain_adapted/logs
+  result_dir: conditions/ssl_domain_adapted/results
+

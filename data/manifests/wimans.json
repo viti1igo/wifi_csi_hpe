@@ -1,0 +1,14 @@
+{
+  "dataset": "WiMANS",
+  "source": "https://www.kaggle.com/datasets/shuokanghuang/wimans",
+  "downloaded_at": "2026-09-01T07:00:00+00:00",
+  "status": "verified_archive",
+  "download_note": "Downloaded anonymously through KaggleHub; KaggleHub extraction was interrupted after the complete archive arrived. The project copy is the untouched archive and has not been explored or extracted.",
+  "files": [
+    {
+      "path": "/data/axnguyen/31050_ML/wifi_csi_hpe/data/raw/wimans/WiMANS.zip",
+      "bytes": 52890482919,
+      "sha256": "e30e7d588bce6508816c32a2b6fc620225871f8518adb58f5e1980e71e2a1393"
+    }
+  ]
+}

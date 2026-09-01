@@ -1,0 +1,13 @@
+{
+  "dataset": "Wi-Pose",
+  "source": "https://drive.google.com/file/d/1WL6bJ-rSVdsclRt9RFc0l5hhtXYmfNg9/view?usp=sharing",
+  "downloaded_at": "2026-09-01T06:06:15.586074+00:00",
+  "status": "verified_archive",
+  "files": [
+    {
+      "path": "/data/axnguyen/31050_ML/wifi_csi_hpe/data/raw/wipose/Wi-Pose.rar",
+      "bytes": 1552149839,
+      "sha256": "3289121b32ab23c2a2eb56b365f6ad13f230e935d5dafaa12207a656ef3a9295"
+    }
+  ]
+}

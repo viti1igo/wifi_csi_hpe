@@ -1,0 +1,11 @@
+condition: source_only_zero_shot
+pretraining:
+  enabled: false
+transfer:
+  source: wipose
+  target: wimans
+  target_data_seen_before_inference: false
+paths:
+  log_dir: conditions/source_only_zero_shot/logs
+  result_dir: conditions/source_only_zero_shot/results
+
