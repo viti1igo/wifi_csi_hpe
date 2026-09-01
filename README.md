@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# wifi_csi_hpe
-=======
 # WiFi-CSI Human Pose Estimation
 
 Notebook-first Assignment 2 project comparing two transfer conditions:
@@ -30,4 +27,3 @@ stored in `environment.yml`.
 - WiMANS: https://www.kaggle.com/datasets/shuokanghuang/wimans
 
 Downloaded archives and binaries are excluded from Git. Download provenance and SHA-256 hashes are written to `data/manifests/`.
->>>>>>> 412253b (Add WiFi-CSI HPE assignment scaffold and notebooks.)
