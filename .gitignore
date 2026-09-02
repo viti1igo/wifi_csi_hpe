@@ -3,6 +3,7 @@ __pycache__/
 .pytest_cache/
 .ipynb_checkpoints/
 .venv/
+.cache/
 data/raw/*
 !data/raw/.gitkeep
 data/extracted/
@@ -10,4 +11,4 @@ logs/*
 results/*
 *.pt
 *.pth
-
+*.npz

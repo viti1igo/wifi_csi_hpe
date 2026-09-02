@@ -1,5 +1,9 @@
 # Preprocessing — Source-only Zero-shot
 
+The complete shared procedure and acceptance criteria are defined in
+[`../../../docs/PREPROCESSING.md`](../../../docs/PREPROCESSING.md). This file records
+only the decisions specific to this condition.
+
 No preprocessing has been run.
 
 ## Planned Wi-Pose mapping
@@ -18,4 +22,3 @@ No preprocessing has been run.
 - Align five CSI packets around each selected video timestamp.
 - Use Wi-Pose training statistics for strict zero-shot normalization.
 - Never fit a target-specific normalizer in this condition.
-

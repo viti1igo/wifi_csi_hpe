@@ -16,8 +16,8 @@ Exactly one status checkbox is selected per task.
 
 | Task | NOT RUN | RUNNING | DONE |
 |---|:---:|:---:|:---:|
-| Archive extraction and data exploration | [x] | [ ] | [ ] |
-| Shared manifest construction and preprocessing | [x] | [ ] | [ ] |
+| Archive extraction and data exploration | [ ] | [ ] | [x] |
+| Corrected shared preprocessing after manifest construction | [ ] | [x] | [ ] |
 | Participant and environment split audit | [x] | [ ] | [ ] |
 | GPU visibility and automatic batch-size probe | [x] | [ ] | [ ] |
 | Masked CSI self-supervised pretraining | [x] | [ ] | [ ] |
