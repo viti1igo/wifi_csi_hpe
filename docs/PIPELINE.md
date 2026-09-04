@@ -17,6 +17,7 @@ contracts, failures, and operational gates are in
 | 7. SSL adaptation | allowed unlabelled CSI | pretrained encoder + selected pose checkpoint | no target pose labels used |
 | 8. Evaluation | frozen selected checkpoint | final metrics/predictions/figures | test used only after selection |
 | 9. Assignment notebook | saved artefacts | reproducible narrative | claims map to saved evidence |
+| 10. WiMANS video reference | 594 held-out videos | BODY-14 pseudo-reference NPZ files | provenance, confidence, and coverage checks pass |
 
 ```text
 Wi-Pose raw MAT -> audit -> synchronized CSI + AlphaPose-18
@@ -31,3 +32,25 @@ see only its declared unlabelled WiMANS adaptation partition; its zero-shot
 evaluation partition and all target pose pseudo-labels remain unavailable until
 final evaluation. Raw/extracted data is immutable and ignored by Git. Each condition
 writes only under its own `logs/` and `results/` directories.
+
+## Frozen evaluation flow
+
+```text
+Wi-Pose test ───────────────> Condition A/B best.pt ──> native test metrics
+WiMANS held-out CSI ────────> identical 5-packet windows ─┐
+WiMANS held-out video ──────> AlphaPose COCO-17 ─> BODY-14 ─> Wi-Pose camera frame
+                                                           └─> paired agreement + sensitivity
+```
+
+Video frame centres are mapped uniformly across each CSI recording because the
+release has no authoritative packet-to-frame timestamps.  Offset results at
+`-2,-1,0,+1,+2` frames bound this assumption.  AlphaPose labels are unavailable to
+training and checkpoint selection.
+
+The completed extraction produced 52,684 primary-valid frames (98.55% of 53,460).
+AlphaPose image coordinates are rotated from `(x,y)` to the Wi-Pose stored-camera
+frame `(y,-x)` before hip-centering and torso normalization; upright rotation is
+then used only for display.
+Wi-Pose measures native target accuracy; WiMANS measures agreement with AlphaPose
+under domain and synchronization uncertainty. Condition B improved both Wi-Pose NME
+and held-out WiMANS pseudo-reference agreement after coordinate-frame alignment.

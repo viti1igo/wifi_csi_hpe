@@ -12,3 +12,4 @@ results/*
 *.pt
 *.pth
 *.npz
+data/pseudo_labels/**/*.mp4

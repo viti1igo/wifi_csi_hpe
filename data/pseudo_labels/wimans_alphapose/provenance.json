@@ -1,0 +1,20 @@
+{
+  "alphapose_git_commit": "c60106d19afb443e964df6f06ed1842962f5f1f7",
+  "alphapose_local_patch": "torchvision NMS/RoIAlign fallback; host has no nvcc",
+  "confidence_primary": 0.3,
+  "confidence_sensitivity": [
+    0.1,
+    0.5
+  ],
+  "config": "configs/coco/resnet/256x192_res50_lr1e-3_1x.yaml",
+  "coordinate_contract": "AlphaPose image (x,y) rotated to Wi-Pose stored camera frame (y,-x) before canonicalization",
+  "detector": "yolov3-spp",
+  "detector_checkpoint_sha256": "87a1e8c85c763316f34e428f2295e1db9ed4abcec59dd9544f8052f50de327b4",
+  "frames": 53460,
+  "heldout_manifest_sha256": "9b7b741d8caddeeac95c6bd944c35b4088963cf62f85dc1963f45e713a367f3c",
+  "label": "AlphaPose video-derived pseudo-reference (not physical ground truth)",
+  "pose_checkpoint_sha256": "42808e905aa20133a89a6a2cba073265a2ce35fabe65edffd9f153ef5846b7b0",
+  "raw_json_sha256": "108bc94aa1da386a1502f8481ceacb7103929bb01bc0ccc057a5a8b384be9af3",
+  "recordings": 594,
+  "valid_primary_frames": 52684
+}

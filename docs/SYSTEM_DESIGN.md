@@ -177,22 +177,23 @@ checkpoint or manifest.
 | Fit normalizers per dataset | May improve target scores. | Rejected for strict zero-shot: leaks target distribution. |
 | Train one mixed-domain supervised model | Simple implementation. | Rejected: no WiMANS native pose labels and weak comparison. |
 
-# 11. Open questions
+# 11. Resolved questions and remaining uncertainty
 
 1. Confirm the exact Wi-Pose CSI-to-video timestamp rule from the dataset/paper and
    quantify offset for randomly selected recordings.
-2. Confirm which WiMANS recording groups are eligible for the project's final
-   single-person, 5 GHz target protocol.
-3. Decide whether final WiMANS reporting is representation/action-proxy only or
-   includes carefully labelled AlphaPose pseudo-label agreement.
+2. The frozen WiMANS protocol uses 594 single-person, 5 GHz `empty_room`
+   environment recordings; none were available to training.
+3. Final WiMANS reporting includes carefully labelled AlphaPose pseudo-reference
+   agreement, coverage, and confidence/alignment sensitivity.
 4. Decide after schema audit whether CountFi's Demo3 filter parameters transfer
    unchanged to Wi-Pose's sampling rate.
 
 # 12. Decision and next steps
 
-Adopt the versioned preprocessing system before any model training. First deliver a
-corrected named skeleton contract and schema report, then lock the grouped split and
-source-only normalization. Only then run training and cross-domain comparisons.
+The versioned preprocessing, grouped split, frozen normalizer, and both training
+conditions are complete.  The current decision is to preserve the selected
+checkpoints and finish the one-time native and cross-domain evaluation without
+feeding any final result back into model selection.
 
 | Milestone | Deliverable | Exit criteria |
 |---|---|---|
@@ -200,3 +201,25 @@ source-only normalization. Only then run training and cross-domain comparisons.
 | M2 | Versioned Wi-Pose processed data and 8/1/1 split. | No leakage; source-only normalization is frozen. |
 | M3 | WiMANS SSL/evaluation window indexes. | Disjoint target partitions and documented eligibility. |
 | M4 | Two-condition training and notebook evidence. | Monitor-selected checkpoints and untouched final evaluations. |
+
+# 13. Frozen evaluation contract
+
+The evaluation boundary accepts immutable split/normalizer artefacts, the two
+monitor-selected `best.pt` checkpoints, held-out Wi-Pose samples, and held-out
+WiMANS CSI/video pairs.  It emits per-sample predictions, aggregate tables,
+paired-bootstrap intervals, sensitivity analyses, plots, and provenance records.
+
+An AlphaPose pseudo-reference record contains `[90,17,3]` raw COCO keypoints,
+`[90,14,2]` pixel, Wi-Pose-camera, and canonical BODY-14 poses, `[90,14]`
+confidence, frame/time,
+hip/torso normalization values, person score, validity, and recording metadata.
+Consumers must reject a model/split/normalizer/provenance checksum mismatch.
+
+WiMANS `(x,y)` image coordinates are rotated to the Wi-Pose stored-camera frame
+`(y,-x)` before metrics. The inverse upright transform belongs only to visualization.
+
+Evaluation is replay-safe: completed pseudo-reference NPZ files are reused, saved
+result tables are reconstructed from immutable inputs, and no optimizer or model
+checkpoint is written. Missing detections reduce reported coverage; they are never
+silently converted to zero-coordinate poses. Unsupported synchronization is
+reported through offset sensitivity rather than hidden behind a precise claim.

@@ -50,6 +50,9 @@ class ManifestPoseDataset(Dataset[dict[str, torch.Tensor | str]]):
             raw = payload[record.get("csi_key", "csi_serial")]
         elif path.suffix == ".npy":
             raw = np.load(path, allow_pickle=False)
+        elif path.suffix == ".npz":
+            payload = np.load(path, allow_pickle=False)
+            raw = payload["csi"]
         else:
             raise ValueError(f"Unsupported CSI file type: {path.suffix}")
         csi = reshape_csi_window(csi_amplitude(raw))
@@ -60,10 +63,10 @@ class ManifestPoseDataset(Dataset[dict[str, torch.Tensor | str]]):
             "participant": str(record["participant"]),
             "sample_id": str(record.get("sample_id", path.stem)),
         }
-        if "joints" in record:
+        if path.suffix == ".npz" and "joints" in payload:
+            result["joints"] = torch.from_numpy(payload["joints"].astype(np.float32))
+            result["confidence"] = torch.from_numpy(payload["confidence"].astype(np.float32))
+        elif "joints" in record:
             result["joints"] = torch.tensor(record["joints"], dtype=torch.float32)
-            result["confidence"] = torch.tensor(
-                record.get("confidence", [1.0] * 14), dtype=torch.float32
-            )
+            result["confidence"] = torch.tensor(record.get("confidence", [1.0] * 14), dtype=torch.float32)
         return result
-

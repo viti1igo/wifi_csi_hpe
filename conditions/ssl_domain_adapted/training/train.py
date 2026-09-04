@@ -11,8 +11,9 @@ from shared.training import SkeletonAwareLoss
 from shared.utils import deep_merge, load_yaml
 
 
-def build_pretrainer() -> MaskedCSIAutoencoder:
-    return MaskedCSIAutoencoder(latent_channels=128)
+def build_pretrainer(config: dict | None = None) -> MaskedCSIAutoencoder:
+    channels = tuple(config["model"]["channels"]) if config else (32, 64, 128, 192)
+    return MaskedCSIAutoencoder(channels)
 
 
 def build_finetuner(config: dict) -> tuple[torch.nn.Module, torch.nn.Module, torch.optim.Optimizer]:
@@ -42,7 +43,7 @@ def main() -> None:
     condition = load_yaml(args.project_root / "conditions/ssl_domain_adapted/configs/condition.yaml")
     config = deep_merge(base, condition)
     if args.prepare_only:
-        build_pretrainer()
+        build_pretrainer(config)
         build_finetuner(config)
         return
     raise RuntimeError("Training is intentionally locked until exploration and preprocessing are approved")

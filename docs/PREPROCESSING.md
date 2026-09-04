@@ -26,13 +26,15 @@ a video-model pseudo-label, not measured ground truth.
 | Extraction | Complete | Wi-Pose and WiMANS are under `data/extracted/` |
 | File inventories | Complete | Initial JSON/JSONL manifests exist |
 | Exploratory Wi-Pose NPZ conversion | Provisional | Must be regenerated after the 18-joint mapping and synchronization audits below |
-| Final preprocessing | Not run | No processed artefact is approved for training yet |
-| Participant-grouped split | Not run | Split membership must be created before fitting normalization statistics |
+| Final Wi-Pose conversion | Complete | 166,600 corrected shards retain AlphaPose-18 and named BODY-14 targets |
+| Participant-grouped split | Complete | 96/12/12 groups; 132,786/16,169/17,645 train/monitor/test frames |
+| Training-only normalization | Complete | `[9,30]` mean/std fitted on 132,786 training samples only |
+| WiMANS readiness partition | Complete | 1,188 SSL-train and 594 empty-room zero-shot recordings |
 
-The files currently in `data/processed/wipose/` are exploratory artefacts. They are
-useful for notebook visualisation but must not be treated as final training data.
-The current converter truncates the first 14 of 18 AlphaPose joints. The final
-converter must instead use an explicit named joint mapping and verify every edge.
+The files in `data/processed/wipose/` now preserve all 18 AlphaPose points and use
+an explicit name-based mapping for the 14-joint training target. Split,
+normalization, target partition, and quality artefacts are stored under
+`data/manifests/` and `data/processed/`.
 
 ## Non-negotiable data rules
 
@@ -158,6 +160,16 @@ offset distribution is reported. The manifest must store alignment error in
 milliseconds where timestamps permit it.
 
 ## Stage 3 — CSI calibration and signal cleaning
+
+### Implemented readiness version 1
+
+Version 1 applies amplitude conversion, explicit axis reshaping, and training-only
+per-link/per-subcarrier standardization. It does not apply the earlier WiSe4Car
+breathing pipeline's ACF or long-window Hampel/Savitzky–Golay/band-pass chain: the
+available Wi-Pose learning unit contains only five packets, ACF removes temporal
+detail needed for pose regression, and the original Demo3 implementation is not
+present in this workspace. Continuous-recording filtering remains an explicit HPE
+ablation rather than an unverified prerequisite.
 
 The first implementation uses amplitude as the common representation:
 
@@ -389,7 +401,7 @@ Preprocessing is considered complete only when all checks pass:
 - [ ] Processed loaders pass shape, dtype, finite-value, and reproducibility tests.
 - [ ] Manifests, parameters, quality report, and processed artefacts are versioned.
 
-## Execution order from here
+## Executed preparation order
 
 1. Correct and test the Wi-Pose 18-joint decoder and named 18-to-14 mapping.
 2. Rebuild both complete raw inventories and produce the schema/quality report.
@@ -400,7 +412,38 @@ Preprocessing is considered complete only when all checks pass:
 7. Canonicalize pose targets and serialize versioned Wi-Pose tensors.
 8. Build disjoint WiMANS SSL-adaptation and zero-shot evaluation windows.
 9. Add the audit tables, plots, and full-sequence videos to the master notebook.
-10. Run acceptance checks. Only then start the source-only training condition.
+10. Run acceptance checks, then train and freeze both selected conditions before evaluation.
+
+## Stage 13 — WiMANS video-derived pseudo-references
+
+The 594 held-out `empty_room` recordings contain one participant; `empty_room`
+identifies the collection environment rather than zero occupancy.  Their videos are
+processed only after both checkpoints are frozen.  AlphaPose FastPose/ResNet-50 with
+the official YOLOv3-SPP detector produces COCO-17 joints.  For each frame, retain the
+highest-scoring person and map joints by name:
+
+| BODY-14 target | COCO-17 source |
+|---|---|
+| nose, shoulders, elbows, wrists, hips, knees, ankles | identically named joint |
+| neck | midpoint of left/right shoulders; confidence is their minimum |
+
+Before canonicalization, conventional AlphaPose image coordinates `(x,y)` are
+rotated to the Wi-Pose stored-camera coordinate contract `(y,-x)`. This makes the
+reference frame identical to the target frame used during model training. The
+inverse upright rotation is used only for human-readable plots and animation.
+
+The primary valid-frame rule is confidence `>=0.30` for the neck and both hips,
+at least ten confident BODY-14 joints, a finite non-zero torso, and finite canonical
+coordinates.  Thresholds `0.10` and `0.50` are sensitivity checks.  Each NPZ retains
+raw COCO-17 output, BODY-14 pixel, Wi-Pose-camera and canonical coordinates, confidence, person
+score, frame/time indices, hip midpoint, torso scale, validity, sample metadata,
+and tool/model provenance.
+
+Video frame centres are mapped uniformly over the corresponding CSI packet sequence;
+the centred five-packet window is clipped at recording boundaries and rearranged to
+`[9,5,30]`.  Results at ±1 and ±2 video frames expose synchronization sensitivity.
+These labels are **AlphaPose video-derived pseudo-references**, not manual annotation,
+motion capture, or physical ground truth.
 
 ## Condition-specific differences
 

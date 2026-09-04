@@ -11,10 +11,12 @@ def csi_amplitude(csi: np.ndarray) -> np.ndarray:
 
 
 def reshape_csi_window(csi: np.ndarray) -> np.ndarray:
-    """Convert [time, subcarrier, tx, rx] into [links, time, subcarrier]."""
-    if csi.shape != (5, 30, 3, 3):
-        raise ValueError(f"Expected CSI shape (5, 30, 3, 3), received {csi.shape}")
-    return csi.transpose(2, 3, 0, 1).reshape(9, 5, 30).astype(np.float32)
+    """Convert either observed Wi-Pose layout into [links, time, subcarrier]."""
+    if csi.shape == (5, 3, 3, 30):
+        return csi.transpose(1, 2, 0, 3).reshape(9, 5, 30).astype(np.float32)
+    if csi.shape == (5, 30, 3, 3):
+        return csi.transpose(2, 3, 0, 1).reshape(9, 5, 30).astype(np.float32)
+    raise ValueError(f"Expected CSI shape (5, 3, 3, 30) or (5, 30, 3, 3), received {csi.shape}")
 
 
 @dataclass(frozen=True)
@@ -26,12 +28,12 @@ class CSINormalizer:
     def fit(cls, training_samples: np.ndarray, epsilon: float = 1e-6) -> "CSINormalizer":
         if training_samples.ndim != 4 or training_samples.shape[1:] != (9, 5, 30):
             raise ValueError("Expected training samples shaped [N, 9, 5, 30]")
-        mean = training_samples.mean(axis=(0, 2), keepdims=True)
-        std = training_samples.std(axis=(0, 2), keepdims=True)
+        mean = training_samples.mean(axis=(0, 2))
+        std = training_samples.std(axis=(0, 2))
         return cls(mean.astype(np.float32), np.maximum(std, epsilon).astype(np.float32))
 
     def transform(self, sample: np.ndarray) -> np.ndarray:
-        return ((sample - self.mean[0]) / self.std[0]).astype(np.float32)
+        return ((sample - self.mean[:, None, :]) / self.std[:, None, :]).astype(np.float32)
 
 
 def canonicalize_pose(joints: np.ndarray, confidence: np.ndarray | None = None) -> tuple[np.ndarray, float]:
@@ -50,4 +52,3 @@ def canonicalize_pose(joints: np.ndarray, confidence: np.ndarray | None = None) 
     if not np.isfinite(torso) or torso < 1e-6:
         raise ValueError("Cannot canonicalize a pose with zero or invalid torso length")
     return ((joints - hip_midpoint) / torso).astype(np.float32), torso
-

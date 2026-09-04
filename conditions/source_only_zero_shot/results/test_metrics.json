@@ -1,0 +1,14 @@
+{
+  "bone_length_error": 0.07991340566742147,
+  "checkpoint_epoch": 63,
+  "condition": "source_only_zero_shot",
+  "nme": 0.20618158559692026,
+  "normalizer_checksum": "366f983edcaf5024dbfd9a93becb0d28757a6cfd767328ebaa789980d3c9de07",
+  "pck_0.05": 0.21451240739991093,
+  "pck_0.10": 0.42955511476338903,
+  "pck_0.20": 0.668675869327612,
+  "pck_auc_0_0.50": 0.6445095332550702,
+  "samples": 17645,
+  "split_checksum": "fc36b46a6779f183dae2b2ea04820f3062013c7ccd2ab8e46e1fcfbaf1beed62",
+  "symmetry_error": 0.018491222232223384
+}

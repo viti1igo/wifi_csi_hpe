@@ -4,6 +4,8 @@ pretraining:
   mask_ratio: 0.30
   epochs: 50
   learning_rate: 0.001
+  monitor_fraction: 0.10
+  balanced_sources: true
   sources: [wipose_train_unlabeled, wimans_classroom, wimans_meeting_room]
   excluded_target_environment: empty_room
 transfer:
@@ -14,4 +16,3 @@ transfer:
 paths:
   log_dir: conditions/ssl_domain_adapted/logs
   result_dir: conditions/ssl_domain_adapted/results
-

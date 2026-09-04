@@ -12,4 +12,9 @@
 10. Freeze all parameters and infer on the reserved WiMANS test domain.
 11. Compare predictions with video-derived, confidence-filtered pseudo-labels.
 12. Populate the master notebook and assignment report sections.
+## Frozen evaluation
+
+The source-only `best.pt` is evaluated once on the untouched Wi-Pose test split
+and on the 594 WiMANS held-out recordings.  WiMANS video poses are AlphaPose
+pseudo-references, never training labels or physical ground truth.
 

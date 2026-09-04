@@ -12,4 +12,10 @@
 10. Freeze weights and evaluate on unseen WiMANS empty-room recordings.
 11. Compare against source-only predictions using identical pseudo-label frames.
 12. Present the controlled comparison in the master notebook.
+## Frozen evaluation
+
+The SSL-adapted `best.pt` is evaluated on exactly the same Wi-Pose samples and
+WiMANS CSI/video frames as Condition A.  The held-out `empty_room` environment and
+all AlphaPose pseudo-references were unavailable during SSL, fine-tuning, and
+checkpoint selection.
 

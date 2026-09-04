@@ -9,14 +9,18 @@ from .pose_cnn import ResidualBlock
 class MaskedCSIAutoencoder(nn.Module):
     """Compact masked-reconstruction pretrainer for common CSI tensors."""
 
-    def __init__(self, latent_channels: int = 128) -> None:
+    def __init__(self, channels: tuple[int, ...] = (32, 64, 128, 192)) -> None:
         super().__init__()
-        self.encoder = nn.Sequential(
-            ResidualBlock(9, 32), ResidualBlock(32, 64), ResidualBlock(64, latent_channels),
-        )
+        blocks, in_channels = [], 9
+        for index, out_channels in enumerate(channels):
+            blocks.append(ResidualBlock(in_channels, out_channels, (1, 1) if index == 0 else (1, 2)))
+            in_channels = out_channels
+        self.encoder = nn.Sequential(*blocks)
         self.decoder = nn.Sequential(
-            nn.Conv2d(latent_channels, 64, 3, padding=1), nn.GELU(),
-            nn.Conv2d(64, 32, 3, padding=1), nn.GELU(), nn.Conv2d(32, 9, 1),
+            nn.ConvTranspose2d(channels[3], channels[2], 3, stride=(1, 2), padding=1, output_padding=(0, 1)), nn.GELU(),
+            nn.ConvTranspose2d(channels[2], channels[1], 3, stride=(1, 2), padding=1, output_padding=(0, 1)), nn.GELU(),
+            nn.ConvTranspose2d(channels[1], channels[0], 3, stride=(1, 2), padding=1, output_padding=(0, 1)), nn.GELU(),
+            nn.Conv2d(channels[0], 9, 1),
         )
 
     @staticmethod
@@ -28,5 +32,4 @@ class MaskedCSIAutoencoder(nn.Module):
     def forward(self, x: torch.Tensor, mask_ratio: float = 0.30) -> tuple[torch.Tensor, torch.Tensor]:
         mask = self.make_mask(x, mask_ratio)
         encoded = self.encoder(x.masked_fill(mask, 0.0))
-        return self.decoder(encoded), mask
-
+        return self.decoder(encoded)[..., :30], mask

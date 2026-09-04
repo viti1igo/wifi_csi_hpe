@@ -11,7 +11,7 @@
 | Optimizer | AdamW, learning rate `1e-3`, weight decay `1e-4` |
 | Schedule | maximum 100 supervised epochs, patience 15 |
 | Precision | BF16 when supported, otherwise FP16 AMP |
-| Parallelism | two-rank DDP only if both GPUs are visible and verified |
+| Parallelism | reliable single-GPU notebook runs; two-rank DDP is an optional external workflow |
 | Batch probe | largest safe per-GPU batch divisible by 8, retaining configured VRAM reserve |
 | Checkpoint choice | smallest Wi-Pose monitor NME; final test unavailable to selection |
 
@@ -30,3 +30,25 @@ the end of every epoch; the final test is evaluated only after selection.
 
 GPU probing and training must not begin until the preprocessing acceptance checks in
 [`PREPROCESSING.md`](PREPROCESSING.md) pass.
+
+## Completed selected runs
+
+| Condition | Stopped | Selected `best.pt` | Best monitor NME |
+|---|---:|---:|---:|
+| Source-only | epoch 78 | epoch 63 | 0.211997 |
+| SSL reconstruction | epoch 50 | epoch 50 | masked MSE 5.475179 |
+| SSL-adapted fine-tuning | epoch 79 | epoch 64 | 0.207625 |
+
+Section 6 loads only the two supervised `best.pt` checkpoints.  It performs no
+optimizer step, early stopping, checkpoint selection, or training resumption.
+
+## Frozen evaluation result
+
+| Dataset/reference | Condition A NME | Condition B NME | B minus A paired result |
+|---|---:|---:|---:|
+| Wi-Pose native test, 17,645 samples | 0.206182 | 0.202268 | -0.004029; 95% CI [-0.007606, -0.000060] |
+| WiMANS AlphaPose pseudo-reference, 52,684 valid frames | 0.353495 | 0.336049 | -0.017837; 95% CI [-0.022474, -0.013166] |
+
+Condition B improves slightly on native Wi-Pose and improves cross-domain
+agreement in the held-out WiMANS environment. The second row is agreement with a
+video estimator under approximate synchronization, not physical pose accuracy.

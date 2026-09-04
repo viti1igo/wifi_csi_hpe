@@ -4,7 +4,9 @@ The complete shared procedure and acceptance criteria are defined in
 [`../../../docs/PREPROCESSING.md`](../../../docs/PREPROCESSING.md). This file records
 only the decisions specific to this condition.
 
-No preprocessing has been run.
+Shared preprocessing and readiness validation completed on 2026-09-03. This
+condition uses the frozen normalizer fitted on 132,786 Wi-Pose training frames and
+the reserved 594-recording WiMANS empty-room zero-shot partition.
 
 ## Planned Wi-Pose mapping
 
