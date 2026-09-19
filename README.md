@@ -5,11 +5,7 @@ Notebook-first Assignment 2 project comparing two transfer conditions:
 1. `source_only_zero_shot`: supervised Wi-Pose training and frozen WiMANS inference.
 2. `ssl_domain_adapted`: masked-CSI pretraining on permitted unlabeled data, followed by supervised Wi-Pose fine-tuning.
 
-The final assignment narrative lives in `notebooks/WiFi_CSI_HPE_A2.ipynb`. Reusable implementation is kept in `shared/`; condition folders contain only condition-specific configuration, wrappers, documentation, logs, results, and supporting notebooks.
-
-## Current milestone
-
-Only scaffolding, static validation, and raw dataset acquisition are complete. Do not extract, explore, preprocess, probe GPUs, or train until the task trackers are reviewed.
+The final assignment narrative lives in `notebooks/24681189_notebook.ipynb`. Reusable implementation is kept in `shared/`; condition folders contain only condition-specific configuration, wrappers, documentation, logs, results, and supporting notebooks.
 
 ## Intended runtime
 
