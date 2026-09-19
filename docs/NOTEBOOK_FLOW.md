@@ -1,43 +1,34 @@
 # Assignment Notebook Flow
 
-`notebooks/WiFi_CSI_HPE_A2_Independent.ipynb` is the public, self-contained narrative. It calls
-shared modules and reads saved manifests/results; it does not reproduce a second,
-divergent implementation.
+The submitted notebook is [`notebooks/24681189_notebook.ipynb`](../notebooks/24681189_notebook.ipynb). It contains 138 cells: 72 Markdown cells and 66 executed code cells. The saved notebook has no error outputs. Shared modules under `shared/` remain the implementation source of truth.
 
-| Section | Evidence | Source of truth |
+| Section | Purpose | Saved evidence |
 |---|---|---|
-| 0. Reproducibility | environment, seed, paths, data versions | config + manifests |
-| 1.1 Wi-Pose | counts, action distribution, CSI, 18 AlphaPose sequence | inventory/audit |
-| 1.2 WiMANS | domain/band/person/action distribution and label limits | inventory/audit |
-| 2. Preprocessing | raw/clean CSI, named mapping, canonicalization, split | processed report |
-| 3. Model | tensor interfaces, architecture, loss, metrics | shared modules |
-| 4. Condition A | configuration, epoch curves, final metrics | source-only results |
-| 5. Condition B | SSL/fine-tune configuration and results | SSL results |
-| 6. Evaluation | predictions, error analysis, target-domain caveats | frozen outputs |
-| 7. Reflection | limitations, decisions, implementation record | project docs |
+| 1. Task definition and data | Audit Wi-Pose and WiMANS schemas, distributions, CSI and pose examples | Inventories, plots, synchronized examples and videos |
+| 2. Preprocessing | Convert both datasets to the common input contract and prepare BODY-14 targets | Manifests, split audit, normalizer and processed examples |
+| 3. Model and theory | Define PoseCNN, masked reconstruction, loss functions and metrics | Tensor checks, model summaries and formulas |
+| 4. Condition A | Train PoseCNN only with labelled Wi-Pose | Epoch log, selected checkpoint and training curves |
+| 5. Condition B | Pretrain the encoder with unlabelled CSI, then fine-tune with the same Wi-Pose labels | SSL and fine-tuning logs, checkpoints and curves |
+| 6. Condition A evaluation | Test Condition A alone on the untouched Wi-Pose split | Aggregate and per-joint metrics, confusion matrix and inference video |
+| 7. Comparative evaluation | Compare both conditions on Wi-Pose and held-out WiMANS | Tables, bootstrap intervals, sensitivity checks, skeleton plots and videos |
+| 8. Discussion | Interpret the evidence and record limitations | Findings, implementation log and submission notes |
 
-Every figure title identifies dataset, split, condition, sample/recording ID, time
-range, label provenance, and preprocessing version where applicable. AlphaPose labels
-and CSI-model predictions cannot share an ambiguous “ground truth” label.
+Each numbered experimental section starts with a restart cell that reloads saved artefacts. Sections 6 and 7 do not train, resume, select or overwrite a model.
 
-## Section 6 execution
+## Evidence boundaries
 
-Section 6 starts from a fresh kernel: it validates and reloads both selected
-`best.pt` files, constructs only the frozen evaluation inputs, and reads/writes
-versioned evidence under `results/evaluation`.  Native Wi-Pose labels support the
-primary pose-accuracy claims.  The 594 held-out WiMANS `empty_room` recordings
-contain one participant—the name identifies the room configuration—and AlphaPose
-video output is reported only as a **video-derived pseudo-reference**.
+- Wi-Pose provides the only pose supervision. Its labels are video-derived AlphaPose labels supplied with the dataset.
+- Condition A sees no WiMANS data before inference.
+- Condition B sees unlabelled WiMANS classroom and meeting-room CSI during masked reconstruction. It receives no WiMANS pose label.
+- The 594 WiMANS empty-room recordings stay outside training and checkpoint selection.
+- WiMANS video poses are AlphaPose pseudo-references used only for final evaluation.
 
-The section records coverage before agreement metrics, uses identical frames for
-both conditions, reports confidence and ±2-frame alignment sensitivity, and shows
-separate Condition A and Condition B performance subsections. Static examples and
-a full-recording HTML5 animation use the same corrected upright display axes. It never
-trains, resumes, selects, or overwrites a model.
+## Final evaluation coverage
 
-The executed evidence contains 17,645 Wi-Pose test samples and 52,684 valid
-AlphaPose pseudo-reference frames from all 594 WiMANS recordings. AlphaPose image
-coordinates are rotated into the Wi-Pose stored-camera frame before metrics are
-calculated. Condition B improves NME on Wi-Pose (`0.202268` versus `0.206182`) and
-WiMANS pseudo-reference agreement (`0.336049` versus `0.353495`), while the notebook
-retains the pseudo-reference and synchronization limitations.
+The Wi-Pose test partition contains 17,645 samples from 12 held-out participant groups. WiMANS evaluation covers all 594 held-out recordings. AlphaPose produced 52,684 valid BODY-14 frames from 53,460 video frames, giving 98.55% primary coverage.
+
+Condition B reduced Wi-Pose NME from 0.206182 to 0.202268. On WiMANS it reduced pseudo-reference NME from 0.353495 to 0.336049. The WiMANS number measures agreement with a video estimator under approximate synchronization, not physical ground-truth pose accuracy.
+
+## Media on GitHub
+
+Jupyter displays animations locally through HTML5 video output. GitHub renders notebooks as static HTML and may suppress those embedded players. The repository therefore stores selected MP4 outputs under `results/evaluation/figures/`; readers can open them as separate files.
