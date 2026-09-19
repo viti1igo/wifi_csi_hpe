@@ -11,7 +11,6 @@ The submitted notebook is [`notebooks/24681189_notebook.ipynb`](../notebooks/246
 | 5. Condition B | Pretrain the encoder with unlabelled CSI, then fine-tune with the same Wi-Pose labels | SSL and fine-tuning logs, checkpoints and curves |
 | 6. Condition A evaluation | Test Condition A alone on the untouched Wi-Pose split | Aggregate and per-joint metrics, confusion matrix and inference video |
 | 7. Comparative evaluation | Compare both conditions on Wi-Pose and held-out WiMANS | Tables, bootstrap intervals, sensitivity checks, skeleton plots and videos |
-| 8. Discussion | Interpret the evidence and record limitations | Findings, implementation log and submission notes |
 
 Each numbered experimental section starts with a restart cell that reloads saved artefacts. Sections 6 and 7 do not train, resume, select or overwrite a model.
 
