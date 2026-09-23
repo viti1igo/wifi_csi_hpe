@@ -1,4 +1,4 @@
-# WiFi-CSI Human Pose Estimation
+# Cross-dataset WiFi-CSI Human Pose Estimation
 
 Notebook-first Assignment 2 project comparing two transfer conditions:
 
